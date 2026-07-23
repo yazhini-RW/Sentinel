@@ -1,0 +1,125 @@
+{
+  "description": "Labeled accuracy eval set for the Sentinel verifier tiers. 24 self-contained claims about the fictional Aurora Solar Array, 8 per verdict, labeled strictly against the three documents in samples/docs/ (aurora_overview.txt, aurora_operations.txt, aurora_history.md).",
+  "cases": [
+    {
+      "claim": "The Aurora Solar Array is located in the Atacama Desert in Chile.",
+      "label": "SUPPORTED",
+      "note": "aurora_overview.txt states the plant is a photovoltaic power station located in the Atacama Desert in Chile."
+    },
+    {
+      "claim": "The Aurora Solar Array has an installed capacity of 480 megawatts.",
+      "label": "SUPPORTED",
+      "note": "aurora_overview.txt states an installed capacity of 480 megawatts."
+    },
+    {
+      "claim": "The Aurora Solar Array began commercial operation in 2019.",
+      "label": "SUPPORTED",
+      "note": "aurora_overview.txt states commercial operation began in 2019."
+    },
+    {
+      "claim": "Self-driving machines wash the Aurora Solar Array's panels after dark to save water.",
+      "label": "SUPPORTED",
+      "note": "Paraphrase: aurora_operations.txt says panel cleaning is performed by autonomous robots at night to reduce water consumption."
+    },
+    {
+      "claim": "Condor Energy, the firm that runs the Aurora Solar Array, is based in Santiago.",
+      "label": "SUPPORTED",
+      "note": "Paraphrase: aurora_operations.txt says the plant is operated by Condor Energy, headquartered in Santiago."
+    },
+    {
+      "claim": "Building the Aurora Solar Array took roughly three years.",
+      "label": "SUPPORTED",
+      "note": "Paraphrase: aurora_history.md says construction started in 2016 and took about three years to complete."
+    },
+    {
+      "claim": "The Aurora Solar Array uses monocrystalline silicon panels.",
+      "label": "SUPPORTED",
+      "note": "aurora_history.md states the plant uses fixed-tilt monocrystalline silicon panels."
+    },
+    {
+      "claim": "Money borrowed from the Inter-American Development Bank helped pay for the Aurora Solar Array.",
+      "label": "SUPPORTED",
+      "note": "Paraphrase: aurora_history.md says the project was financed partly through a loan from the Inter-American Development Bank."
+    },
+    {
+      "claim": "The Aurora Solar Array has an installed capacity of 750 megawatts.",
+      "label": "CONTRADICTED",
+      "note": "Wrong capacity: aurora_overview.txt states 480 megawatts, not 750."
+    },
+    {
+      "claim": "The Aurora Solar Array employs around 400 permanent staff.",
+      "label": "CONTRADICTED",
+      "note": "Wrong staff count: aurora_operations.txt states around 90 permanent staff, not 400."
+    },
+    {
+      "claim": "The Aurora Solar Array began commercial operation in 2015.",
+      "label": "CONTRADICTED",
+      "note": "Wrong year: aurora_overview.txt states commercial operation began in 2019 (construction only started in 2016)."
+    },
+    {
+      "claim": "The Aurora Solar Array covers roughly 4,000 hectares of desert terrain.",
+      "label": "CONTRADICTED",
+      "note": "Wrong area: aurora_overview.txt states roughly 1,100 hectares, not 4,000."
+    },
+    {
+      "claim": "In 2023, the Aurora Solar Array produced approximately 3,500 gigawatt-hours of electricity.",
+      "label": "CONTRADICTED",
+      "note": "Wrong output: aurora_operations.txt states approximately 1,200 gigawatt-hours in 2023, not 3,500."
+    },
+    {
+      "claim": "The Aurora Solar Array does not deliver power to the national grid.",
+      "label": "CONTRADICTED",
+      "note": "Negation of a stated fact: aurora_overview.txt says power is delivered to the national grid through a dedicated 220 kV line."
+    },
+    {
+      "claim": "The Aurora Solar Array is operated by Andes Power.",
+      "label": "CONTRADICTED",
+      "note": "Wrong operator: aurora_operations.txt states the plant is operated by Condor Energy."
+    },
+    {
+      "claim": "The Aurora Solar Array is located in the Mojave Desert in California.",
+      "label": "CONTRADICTED",
+      "note": "Wrong location: aurora_overview.txt places the plant in the Atacama Desert in Chile."
+    },
+    {
+      "claim": "The Aurora Solar Array won an international renewable energy award in 2020.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: no document mentions any awards."
+    },
+    {
+      "claim": "The panels at the Aurora Solar Array were manufactured by a company based in China.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: aurora_history.md names the panel type (fixed-tilt monocrystalline silicon) but never the manufacturer."
+    },
+    {
+      "claim": "The Aurora Solar Array has a visitor center that offers guided tours to the public.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: no document mentions a visitor center or tours."
+    },
+    {
+      "claim": "The chief executive of Condor Energy is Maria Reyes.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: aurora_operations.txt describes Condor Energy but never names any executive."
+    },
+    {
+      "claim": "The Aurora Solar Array sells its electricity under a long-term power purchase agreement.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: the documents mention grid delivery but say nothing about how the electricity is sold."
+    },
+    {
+      "claim": "The Aurora Solar Array was built by a consortium of European construction firms.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: aurora_history.md covers financing and schedule but never says who built the plant."
+    },
+    {
+      "claim": "The Aurora Solar Array includes an on-site weather monitoring station.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: no document mentions weather monitoring equipment."
+    },
+    {
+      "claim": "Condor Energy operates several other power plants in Chile.",
+      "label": "UNSUPPORTED",
+      "note": "Plausible but absent: the documents only connect Condor Energy to the Aurora Solar Array; its other assets are never mentioned."
+    }
+  ]
+}
