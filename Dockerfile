@@ -1,6 +1,8 @@
-# Runs the Sentinel engine (FastAPI backend) as a container — used for
-# Hugging Face Spaces (Docker SDK) deployment. See DEPLOY.md for the
-# step-by-step guide. Hugging Face Spaces expects the app to listen on 7860.
+# Runs the Sentinel engine (FastAPI backend) as a container. Works on both
+# Google Cloud Run and Hugging Face Spaces (Docker SDK) — see DEPLOY.md.
+# Both platforms inject a PORT env var the container must listen on
+# (Cloud Run picks one dynamically; Spaces always uses 7860), so the CMD
+# below reads $PORT at startup rather than hardcoding either.
 
 FROM python:3.11-slim
 
@@ -19,7 +21,8 @@ COPY sentinel ./sentinel
 COPY pyproject.toml README.md ./
 RUN pip install --no-cache-dir -e .
 
-# Hugging Face Spaces containers must listen on 7860 and 0.0.0.0.
+# Default port for local `docker run` / Hugging Face Spaces; Cloud Run
+# overrides this at runtime with its own PORT value automatically.
 ENV PORT=7860
 EXPOSE 7860
 
@@ -32,4 +35,5 @@ ENV HF_HOME=/app/.cache/huggingface
 # into a private/trusted deployment.
 ENV SENTINEL_ALLOW_SOURCES_PATH=0
 
-CMD ["python", "-m", "uvicorn", "sentinel.api:app", "--host", "0.0.0.0", "--port", "7860"]
+# Shell form so ${PORT} is expanded at container start, not build time.
+CMD python -m uvicorn sentinel.api:app --host 0.0.0.0 --port ${PORT}
