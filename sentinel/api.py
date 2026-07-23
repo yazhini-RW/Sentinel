@@ -81,11 +81,19 @@ app.add_middleware(
 
 # DNS-rebinding guard: a malicious site can point its own hostname at
 # 127.0.0.1 and bypass CORS entirely (same-origin then). Only accept
-# requests addressed to localhost names.
+# requests addressed to trusted host names.
 # "testserver" is FastAPI TestClient's default host — not routable in practice.
+# SENTINEL_TRUSTED_HOSTS lets a real deployment (e.g. Hugging Face Spaces)
+# add its own public hostname; unset means "local machine only" (the default,
+# safest posture for `sentinel serve` on someone's laptop).
+_extra_hosts = [
+    h.strip()
+    for h in os.environ.get("SENTINEL_TRUSTED_HOSTS", "").split(",")
+    if h.strip()
+]
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["127.0.0.1", "localhost", "::1", "testserver"],
+    allowed_hosts=["127.0.0.1", "localhost", "::1", "testserver"] + _extra_hosts,
 )
 
 
@@ -106,9 +114,21 @@ def _active_verifier() -> str:
     return "nli" if get_nli_verifier() is not None else "mock"
 
 
+# On someone's own machine, letting them type a folder path is no more
+# powerful than the CLI they already have. On a PUBLIC deployment it would let
+# any visitor make the server read arbitrary files off its filesystem — so
+# it's off by default and must be explicitly opted into for trusted/private
+# deployments via SENTINEL_ALLOW_SOURCES_PATH=1.
+ALLOW_SOURCES_PATH = os.environ.get("SENTINEL_ALLOW_SOURCES_PATH", "1") == "1"
+
+
 @app.get("/health")
 async def health() -> dict:
-    return {"status": "ok", "default_verifier": _active_verifier()}
+    return {
+        "status": "ok",
+        "default_verifier": _active_verifier(),
+        "allow_sources_path": ALLOW_SOURCES_PATH,
+    }
 
 
 async def _save_uploads(files: list[UploadFile], dest: Path) -> int:
@@ -170,6 +190,11 @@ async def verify(
                 raise HTTPException(400, "All uploaded files were empty")
             sources = tmpdir
         else:
+            if not ALLOW_SOURCES_PATH:
+                raise HTTPException(
+                    403,
+                    "This deployment only accepts uploaded files, not server folder paths.",
+                )
             src = Path(sources_path)  # local product: user points at their own folder
             if not src.is_dir():
                 raise HTTPException(400, f"sources_path is not a folder: {sources_path}")

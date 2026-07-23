@@ -13,6 +13,7 @@ export interface VerdictCounts {
 export interface HealthResponse {
   status: string;
   default_verifier: "nli" | "gemini" | "mock";
+  allow_sources_path: boolean;
 }
 
 export interface Evidence {

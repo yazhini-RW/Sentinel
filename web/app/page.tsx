@@ -1,10 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ErrorBanner from "@/components/ErrorBanner";
 import ResultsView from "@/components/ResultsView";
 import Spinner from "@/components/Spinner";
-import { errorMessage, verify } from "@/lib/api";
+import { errorMessage, getHealth, verify } from "@/lib/api";
 import { formatBytes } from "@/lib/format";
 import type { RunLog, VerifierOption } from "@/lib/types";
 
@@ -40,7 +40,28 @@ export default function VerifyPage() {
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<RunLog | null>(null);
+  // null = not checked yet; assume allowed so the field isn't hidden by
+  // default while /health is loading (matches the API's own default).
+  const [allowSourcesPath, setAllowSourcesPath] = useState<boolean | null>(
+    null,
+  );
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getHealth()
+      .then((h) => {
+        if (!cancelled) setAllowSourcesPath(h.allow_sources_path);
+      })
+      .catch(() => {
+        // API unreachable — the submit button's own error handling covers
+        // this; default to showing the field rather than hiding it silently.
+        if (!cancelled) setAllowSourcesPath(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const handleFilesSelected = (list: FileList | null) => {
     if (!list) return;
@@ -244,23 +265,25 @@ export default function VerifyPage() {
             )}
           </div>
 
-          <div className="mt-4">
-            <label
-              htmlFor="sources-path"
-              className="mb-1 block text-sm font-medium"
-            >
-              …or a folder path on the API server
-            </label>
-            <input
-              id="sources-path"
-              type="text"
-              className={inputClass}
-              placeholder="e.g. C:\docs\sources or ./samples"
-              value={sourcesPath}
-              onChange={(e) => setSourcesPath(e.target.value)}
-              disabled={submitting}
-            />
-          </div>
+          {allowSourcesPath !== false && (
+            <div className="mt-4">
+              <label
+                htmlFor="sources-path"
+                className="mb-1 block text-sm font-medium"
+              >
+                …or a folder path on the API server
+              </label>
+              <input
+                id="sources-path"
+                type="text"
+                className={inputClass}
+                placeholder="e.g. C:\docs\sources or ./samples"
+                value={sourcesPath}
+                onChange={(e) => setSourcesPath(e.target.value)}
+                disabled={submitting}
+              />
+            </div>
+          )}
         </fieldset>
 
         {error && <ErrorBanner message={error} />}
